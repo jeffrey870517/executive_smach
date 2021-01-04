@@ -13,15 +13,13 @@ from nav2_msgs.action import NavigateToPose
 from action_msgs.msg import GoalStatus
 from rclpy.action import ActionClient
 import time
-class SendGoal(smach.State):
+class SendGoal(smach.State):  #Create state SendGoal
     def __init__(self):
         smach.State.__init__(self, 
                              outcomes=['success','failed'],
-                             input_keys=['move_base_goals_in','from_goal'],
+                             input_keys=['move_base_goals_in','from_goal','goal_order'],
                              output_keys=['from_goal'])
-        #self.counter = userdata.from_goal
         self.goal_msgs = NavigateToPose.Goal()
-        #rclpy.init(args=None)
         self.node_ = rclpy.create_node('nav2_client')
         self.node_.get_logger().info('Created node')
         self.action_client = ActionClient (self.node_,NavigateToPose,'navigate_to_pose')
@@ -30,7 +28,7 @@ class SendGoal(smach.State):
             self.node_.get_logger().error('Action server not available after waiting.')
             self.destory_node()
             return 'failed'
-        move_base_goal = userdata.move_base_goals_in[userdata.from_goal].split(';')
+        move_base_goal = userdata.move_base_goals_in[userdata.goal_order[userdata.from_goal]].split(';')
         userdata.from_goal+=1
         self.goal_msgs.pose.header.frame_id='map'
         self.goal_msgs.pose.header.stamp=self.node_.get_clock().now().to_msg()
@@ -67,17 +65,16 @@ class SendGoal(smach.State):
             self.node_.get_logger().error('Unknown result code')
             self.destory_node()
             return 'failed'
-        if userdata.from_goal == len(userdata.move_base_goals_in):
+        if userdata.from_goal == len(userdata.goal_order):
             self.destory_node()
         return 'success'
     def destory_node(self):
         self.action_client.destroy()
         self.node_.destroy_node()
-        #rclpy.shutdown()
 
 
-# define state Bar
-class Wait(smach.State):  #will be set to tcapture in the future
+
+class Wait(smach.State):  #Create state Wait
     def __init__(self):
         smach.State.__init__(self, 
                              outcomes=['continue_sending_goal','finished'],
@@ -96,16 +93,13 @@ class Wait(smach.State):  #will be set to tcapture in the future
 
 def main():
     rclpy.init(args=None)
-
-<<<<<<< HEAD
-=======
     # Create SMACH state machine
->>>>>>> ros2-eloquent
     sm = smach.StateMachine(outcomes=['finished','failed'])
 
     # Define userdata
-    sm.userdata.move_base_goals = ['-0.579;-1.341;0.0;1.0','5.214;-1.533;0.0;1.0','1.588;1.253;0.0;1.0']
-    sm.userdata.goal_num = len(sm.userdata.move_base_goals)
+    sm.userdata.move_base_goals = ['-0.579;-1.341;0.0;1.0','5.214;-1.533;0.0;1.0','1.588;1.253;0.0;1.0']   #Set all the goals you want to sent to the robot.
+    sm.userdata.goal_order = [0,2,1,0,1,2,1,0]
+    sm.userdata.goal_num = len(sm.userdata.goal_order)
     sm.userdata.from_goal = 0
     sm.userdata.count_goal = sm.userdata.from_goal
 
@@ -115,7 +109,8 @@ def main():
                                transitions={'success':'Wait',
                                             'failed':'failed',},
                                remapping={'move_base_goals_in':'move_base_goals',
-                                            'from_goal':'from_goal'})
+                                            'from_goal':'from_goal',
+                                            'goal_order':'goal_order'})
         smach.StateMachine.add('Wait', Wait(),
                                transitions={'continue_sending_goal':'SendGoal',
                                             'finished':'finished'},
@@ -129,9 +124,7 @@ def main():
     sm.execute()
 
     # Wait for interrupt and stop introspection server
-    #rclpy.spin()
     sis.stop()
-    #rclpy.shutdown()
 #
 if __name__=="__main__":
     main()
