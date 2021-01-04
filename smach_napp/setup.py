@@ -14,9 +14,9 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='Chih-Chieh.Chang',
-    maintainer_email='jeffrey870517@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer_email='chih-chieh.chang@adlinktech.com',
+    description='This is a Neuron App of FSM based on SMACH',
+    license='BSD',
     entry_points={
         'console_scripts': [
             'smach_nav2_client = smach_napp.smach_nav2_client:main'

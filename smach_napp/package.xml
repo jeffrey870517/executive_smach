@@ -4,7 +4,7 @@
   <name>smach_napp</name>
   <version>0.8.0</version>
   <description>This is a Neuron App of FSM based on SMACH</description>
-  <maintainer email="jeffrey870517@gmail.com">Chih-Chieh.Chang</maintainer>
+  <maintainer email="chih-chieh.chang@adlinktech.com">Chih-Chieh.Chang</maintainer>
   <license>BSD</license>
   
        
