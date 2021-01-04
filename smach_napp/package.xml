@@ -2,10 +2,10 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>smach_napp</name>
-  <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="jeffrey870517@gmail.com">ros</maintainer>
-  <license>TODO: License declaration</license>
+  <version>0.8.0</version>
+  <description>This is a Neuron App of FSM based on SMACH</description>
+  <maintainer email="jeffrey870517@gmail.com">Chih-Chieh.Chang</maintainer>
+  <license>BSD</license>
   
        
   <depend>rclpy          </depend>
